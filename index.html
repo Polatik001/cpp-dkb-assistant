@@ -601,6 +601,32 @@
   .dir-contact span { margin-right: 10px; }
   .dir-dept-tag { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 8px; margin-top: 5px; font-weight: 600; }
 
+  /* HR PROFILE MODAL */
+  .hr-modal { width: 680px; }
+  .hr-top { display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px; }
+  .hr-avatar-big {
+    width: 72px; height: 72px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: 800; color: #fff; flex-shrink: 0;
+  }
+  .hr-main-info { flex: 1; }
+  .hr-full-name { font-size: 18px; font-weight: 800; color: var(--gray-900); }
+  .hr-role-line { font-size: 13px; color: var(--gray-600); margin-top: 4px; }
+  .hr-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .hr-tag { font-size: 11px; padding: 3px 9px; border-radius: 10px; font-weight: 600; }
+  .hr-section { margin-bottom: 16px; }
+  .hr-section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-400); margin-bottom: 10px; font-weight: 700; }
+  .hr-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .hr-field { background: var(--gray-50); border-radius: 7px; padding: 9px 12px; }
+  .hr-field-label { font-size: 10px; color: var(--gray-500); margin-bottom: 3px; }
+  .hr-field-value { font-size: 13px; font-weight: 600; color: var(--gray-800); }
+  .hr-kpi-row { display: flex; gap: 10px; margin-bottom: 10px; }
+  .hr-kpi-box { flex: 1; background: var(--gray-50); border-radius: 7px; padding: 10px; text-align: center; }
+  .hr-kpi-box .v { font-size: 20px; font-weight: 800; }
+  .hr-kpi-box .l { font-size: 10px; color: var(--gray-500); margin-top: 2px; }
+  .hr-note-area { width: 100%; padding: 9px 12px; border: 1px solid var(--gray-200); border-radius: 7px; font-size: 13px; font-family: inherit; resize: vertical; outline: none; min-height: 70px; }
+  .hr-note-area:focus { border-color: var(--primary); }
+
   /* MY TASKS DASHBOARD */
   .mytasks-header { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
   .mytask-stat {
@@ -894,15 +920,20 @@
 
     <!-- ====== DIRECTORY ====== -->
     <div class="page" id="page-directory">
+      <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+        <div style="background:#fff;border:1px solid var(--gray-200);border-radius:9px;padding:10px 16px;font-size:13px;font-weight:600">👥 Всего сотрудников: <span id="dir-total" style="color:var(--primary)"></span></div>
+        <div style="background:#fff;border:1px solid var(--gray-200);border-radius:9px;padding:10px 16px;font-size:13px;font-weight:600">🏢 ЦПП: <span style="color:var(--primary)">34</span></div>
+        <div style="background:#fff;border:1px solid var(--gray-200);border-radius:9px;padding:10px 16px;font-size:13px;font-weight:600">📍 Регионов: <span style="color:var(--primary)">5</span></div>
+      </div>
       <div class="toolbar" style="margin-bottom:16px">
-        <input class="search-input" placeholder="🔍 Поиск по имени, должности, регион..." oninput="filterDirectory()" id="dir-search">
+        <input class="search-input" placeholder="🔍 Поиск по имени, должности, региону..." oninput="filterDirectory()" id="dir-search">
         <select class="filter-select" onchange="filterDirectory()" id="dir-filter-dept">
           <option value="">Все отделы</option>
-          <option value="ЦПП">ЦПП</option>
+          <option value="ЦПП">ЦПП (34 чел.)</option>
           <option value="ЦКБ">ЦКБ</option>
           <option value="ОАПК">ОАПК</option>
           <option value="ОПиМ">ОПиМ</option>
-          <option value="ДКБ">ДКБ (Руководство)</option>
+          <option value="ДКБ">ДКБ — Руководство</option>
         </select>
         <select class="filter-select" onchange="filterDirectory()" id="dir-filter-region">
           <option value="">Все регионы</option>
@@ -912,7 +943,13 @@
           <option value="Қарағанды">Қарағанды</option>
           <option value="Атырау">Атырау</option>
         </select>
+        <select class="filter-select" onchange="filterDirectory()" id="dir-filter-status">
+          <option value="">Все статусы</option>
+          <option value="Активен">Активен</option>
+          <option value="Декрет">Декрет</option>
+        </select>
       </div>
+      <div id="dir-results-count" style="font-size:12px;color:var(--gray-500);margin-bottom:12px"></div>
       <div class="dir-grid" id="dir-grid"></div>
     </div>
 
@@ -1008,36 +1045,70 @@ const regulations = [
 ];
 
 // ===================== DIRECTORY DATA =====================
-const AVATAR_COLORS = ['#0066CC','#7c3aed','#059669','#dc2626','#d97706','#0891b2','#db2777'];
+const AVATAR_COLORS = ['#0066CC','#7c3aed','#059669','#dc2626','#d97706','#0891b2','#db2777','#be185d','#0f766e','#b45309'];
+
+function mkavatar(name) {
+  const p = name.split(' ');
+  return (p[0]?.[0]||'') + (p[1]?.[0]||'');
+}
+
 const directoryData = [
-  // ДКБ Руководство
-  { name:'Серікбай Аскар Болатович', role:'Директор ДКБ', dept:'ДКБ', region:'Алматы', phone:'+7 727 258-01-01', email:'serikbay@kazakhtelecom.kz', avatar:'СА' },
-  { name:'Мусаев Канат Ерланович', role:'Зам. директора ДКБ', dept:'ДКБ', region:'Алматы', phone:'+7 727 258-01-02', email:'musaev@kazakhtelecom.kz', avatar:'МК' },
-  { name:'Нурмаганбет Дамир Сейткалиевич', role:'Рук. коммерческого блока', dept:'ДКБ', region:'Алматы', phone:'+7 727 258-01-03', email:'nurmaganbetd@kazakhtelecom.kz', avatar:'НД' },
-  // ЦПП
-  { name:'Вы (Начальник ЦПП)', role:'Начальник ЦПП ДКБ', dept:'ЦПП', region:'Алматы', phone:'+7 727 258-02-00', email:'cpp.dkb@kazakhtelecom.kz', avatar:'НЦ', isMe:true },
-  { name:'Асель Нурланова', role:'Ст. менеджер ЦПП', dept:'ЦПП', region:'Алматы', phone:'+7 700 100-01-01', email:'nurlan.a@kz', avatar:'АН' },
-  { name:'Дамир Сейткали', role:'Менеджер по продажам', dept:'ЦПП', region:'Алматы', phone:'+7 700 100-01-02', email:'seitkali.d@kz', avatar:'ДС' },
-  { name:'Гульнара Бекова', role:'Менеджер по продажам', dept:'ЦПП', region:'Астана', phone:'+7 700 100-01-03', email:'bekova.g@kz', avatar:'ГБ' },
-  { name:'Марат Ахметов', role:'Менеджер по продажам', dept:'ЦПП', region:'Астана', phone:'+7 700 100-01-04', email:'ahmetov.m@kz', avatar:'МА' },
-  { name:'Зарина Тулегенова', role:'Менеджер по работе с кл.', dept:'ЦПП', region:'Шымкент', phone:'+7 700 100-01-05', email:'tulegen.z@kz', avatar:'ЗТ' },
-  { name:'Ерлан Смагулов', role:'Менеджер по продажам', dept:'ЦПП', region:'Шымкент', phone:'+7 700 100-01-06', email:'smagulov.e@kz', avatar:'ЕС' },
-  { name:'Айгуль Жаксыбекова', role:'Менеджер по продажам', dept:'ЦПП', region:'Қарағанды', phone:'+7 700 100-01-07', email:'zhaksybek.a@kz', avatar:'АЖ' },
-  { name:'Нурлан Касымов', role:'Менеджер по работе с кл.', dept:'ЦПП', region:'Қарағанды', phone:'+7 700 100-01-08', email:'kasymov.n@kz', avatar:'НК' },
-  { name:'Динара Сабитова', role:'Менеджер по продажам', dept:'ЦПП', region:'Атырау', phone:'+7 700 100-01-09', email:'sabitova.d@kz', avatar:'ДС' },
-  { name:'Тимур Ержанов', role:'Менеджер по продажам', dept:'ЦПП', region:'Атырау', phone:'+7 700 100-01-10', email:'erzhanov.t@kz', avatar:'ТЕ' },
+  // ДКБ — Руководство
+  { id:'mgmt-1', name:'Серікбай Аскар Болатович',      role:'Директор ДКБ',                  dept:'ДКБ',  region:'Алматы',    phone:'+7 727 258-01-01', email:'serikbay.a@kazakhtelecom.kz',    dob:'15.03.1975', hired:'01.09.2012', grade:'А1', status:'Активен',   category:'Топ-менеджмент',    exp:'14 лет', note:'' },
+  { id:'mgmt-2', name:'Мусаев Канат Ерланович',         role:'Зам. директора ДКБ',            dept:'ДКБ',  region:'Алматы',    phone:'+7 727 258-01-02', email:'musaev.k@kazakhtelecom.kz',      dob:'22.07.1979', hired:'01.04.2015', grade:'А2', status:'Активен',   category:'Топ-менеджмент',    exp:'11 лет', note:'' },
+  { id:'mgmt-3', name:'Нурмаганбет Дамир Сейткалиевич', role:'Рук. коммерческого блока',      dept:'ДКБ',  region:'Алматы',    phone:'+7 727 258-01-03', email:'nurmaganbetd@kazakhtelecom.kz',  dob:'10.11.1981', hired:'15.01.2017', grade:'А2', status:'Активен',   category:'Топ-менеджмент',    exp:'9 лет',  note:'' },
+  // ЦПП — Руководство
+  { id:'cpp-0',  name:'Вы (Начальник ЦПП)',             role:'Начальник ЦПП ДКБ',             dept:'ЦПП',  region:'Алматы',    phone:'+7 727 258-02-00', email:'cpp.dkb@kazakhtelecom.kz',       dob:'—',          hired:'—',          grade:'В1', status:'Активен',   category:'Руководитель',      exp:'—',      note:'', isMe:true },
+  // ЦПП — Алматы
+  { id:'cpp-1',  name:'Нурланова Асель Маратовна',      role:'Ст. менеджер по продажам',      dept:'ЦПП',  region:'Алматы',    phone:'+7 701 100-01-01', email:'nurlanova.a@kzt.kz',             dob:'05.04.1992', hired:'10.03.2019', grade:'С1', status:'Активен',   category:'Старший специалист', exp:'7 лет',  note:'', kpiPlan:12, kpiFact:11.4 },
+  { id:'cpp-2',  name:'Сейткали Дамир Бекович',         role:'Менеджер по продажам',          dept:'ЦПП',  region:'Алматы',    phone:'+7 701 100-01-02', email:'seitkali.d@kzt.kz',              dob:'18.09.1995', hired:'01.06.2021', grade:'С2', status:'Активен',   category:'Специалист',        exp:'5 лет',  note:'', kpiPlan:10, kpiFact:8.2  },
+  { id:'cpp-3',  name:'Ержанов Тимур Асылбекович',      role:'Менеджер по продажам',          dept:'ЦПП',  region:'Алматы',    phone:'+7 701 100-01-03', email:'erzhanov.t@kzt.kz',              dob:'29.01.1994', hired:'15.09.2020', grade:'С2', status:'Активен',   category:'Специалист',        exp:'6 лет',  note:'', kpiPlan:10, kpiFact:9.8  },
+  { id:'cpp-4',  name:'Жаксыбекова Айгуль Нурлановна',  role:'Менеджер по работе с клиентами',dept:'ЦПП',  region:'Алматы',    phone:'+7 701 100-01-04', email:'zhaksybek.a@kzt.kz',             dob:'11.06.1993', hired:'01.02.2018', grade:'С1', status:'Активен',   category:'Старший специалист', exp:'8 лет',  note:'', kpiPlan:11, kpiFact:10.9 },
+  { id:'cpp-5',  name:'Смагулов Ерлан Даулетович',      role:'Менеджер по продажам',          dept:'ЦПП',  region:'Алматы',    phone:'+7 701 100-01-05', email:'smagulov.e@kzt.kz',              dob:'07.03.1996', hired:'01.11.2022', grade:'С2', status:'Активен',   category:'Специалист',        exp:'4 года', note:'', kpiPlan:9,  kpiFact:7.1  },
+  { id:'cpp-6',  name:'Касымова Зарина Рустемовна',     role:'Менеджер по работе с клиентами',dept:'ЦПП',  region:'Алматы',    phone:'+7 701 100-01-06', email:'kasymova.z@kzt.kz',              dob:'23.12.1997', hired:'20.01.2023', grade:'С3', status:'Активен',   category:'Специалист',        exp:'3 года', note:'', kpiPlan:8,  kpiFact:8.5  },
+  { id:'cpp-7',  name:'Тлеубергенов Руслан Сериккалиевич','role':'Менеджер по продажам',      dept:'ЦПП',  region:'Алматы',    phone:'+7 701 100-01-07', email:'tleuberk.r@kzt.kz',              dob:'14.05.1991', hired:'05.07.2017', grade:'С1', status:'Активен',   category:'Старший специалист', exp:'9 лет',  note:'', kpiPlan:12, kpiFact:11.8 },
+  // ЦПП — Астана
+  { id:'cpp-8',  name:'Бекова Гульнара Сабитовна',      role:'Ст. менеджер по продажам',      dept:'ЦПП',  region:'Астана',    phone:'+7 702 100-02-01', email:'bekova.g@kzt.kz',                dob:'30.08.1990', hired:'01.04.2016', grade:'С1', status:'Активен',   category:'Старший специалист', exp:'10 лет', note:'', kpiPlan:11, kpiFact:9.3  },
+  { id:'cpp-9',  name:'Ахметов Марат Жандосович',       role:'Менеджер по продажам',          dept:'ЦПП',  region:'Астана',    phone:'+7 702 100-02-02', email:'ahmetov.m@kzt.kz',               dob:'17.02.1994', hired:'01.09.2020', grade:'С2', status:'Активен',   category:'Специалист',        exp:'6 лет',  note:'', kpiPlan:10, kpiFact:9.5  },
+  { id:'cpp-10', name:'Тулегенова Зарина Асхатовна',    role:'Менеджер по работе с клиентами',dept:'ЦПП',  region:'Астана',    phone:'+7 702 100-02-03', email:'tulegenova.z@kzt.kz',            dob:'08.11.1995', hired:'15.03.2021', grade:'С2', status:'Активен',   category:'Специалист',        exp:'5 лет',  note:'', kpiPlan:9,  kpiFact:8.7  },
+  { id:'cpp-11', name:'Оспанова Медина Болатовна',      role:'Менеджер по продажам',          dept:'ЦПП',  region:'Астана',    phone:'+7 702 100-02-04', email:'ospanova.m@kzt.kz',              dob:'25.04.1993', hired:'10.06.2019', grade:'С2', status:'Активен',   category:'Специалист',        exp:'7 лет',  note:'', kpiPlan:10, kpiFact:7.8  },
+  { id:'cpp-12', name:'Джаксыбеков Арман Сейтович',     role:'Менеджер по продажам',          dept:'ЦПП',  region:'Астана',    phone:'+7 702 100-02-05', email:'dzhaksybek.a@kzt.kz',            dob:'03.07.1992', hired:'01.02.2018', grade:'С1', status:'Активен',   category:'Старший специалист', exp:'8 лет',  note:'', kpiPlan:11, kpiFact:10.5 },
+  { id:'cpp-13', name:'Сейткали Гульзат Нурлановна',    role:'Менеджер по работе с клиентами',dept:'ЦПП',  region:'Астана',    phone:'+7 702 100-02-06', email:'seitkali.g@kzt.kz',              dob:'19.09.1996', hired:'01.09.2022', grade:'С2', status:'Активен',   category:'Специалист',        exp:'4 года', note:'', kpiPlan:8,  kpiFact:7.4  },
+  { id:'cpp-14', name:'Нурмаганбет Сейткали Ерланович', role:'Менеджер по продажам',          dept:'ЦПП',  region:'Астана',    phone:'+7 702 100-02-07', email:'nurmaganbets@kzt.kz',             dob:'12.01.1994', hired:'15.04.2020', grade:'С2', status:'Активен',   category:'Специалист',        exp:'6 лет',  note:'', kpiPlan:10, kpiFact:9.1  },
+  // ЦПП — Шымкент
+  { id:'cpp-15', name:'Бекова Айдана Серікқызы',        role:'Ст. менеджер по продажам',      dept:'ЦПП',  region:'Шымкент',   phone:'+7 705 100-03-01', email:'bekova.ai@kzt.kz',               dob:'14.06.1991', hired:'01.06.2016', grade:'С1', status:'Активен',   category:'Старший специалист', exp:'10 лет', note:'', kpiPlan:11, kpiFact:10.1 },
+  { id:'cpp-16', name:'Касымов Данияр Бауыржанович',    role:'Менеджер по продажам',          dept:'ЦПП',  region:'Шымкент',   phone:'+7 705 100-03-02', email:'kasymov.d@kzt.kz',               dob:'20.03.1995', hired:'01.10.2021', grade:'С2', status:'Активен',   category:'Специалист',        exp:'5 лет',  note:'', kpiPlan:9,  kpiFact:8.0  },
+  { id:'cpp-17', name:'Ахметова Жанна Талгатовна',      role:'Менеджер по работе с клиентами',dept:'ЦПП',  region:'Шымкент',   phone:'+7 705 100-03-03', email:'ahmetova.zh@kzt.kz',             dob:'09.08.1994', hired:'15.01.2020', grade:'С2', status:'Активен',   category:'Специалист',        exp:'6 лет',  note:'', kpiPlan:9,  kpiFact:9.6  },
+  { id:'cpp-18', name:'Смагулов Куаныш Ерланович',      role:'Менеджер по продажам',          dept:'ЦПП',  region:'Шымкент',   phone:'+7 705 100-03-04', email:'smagulov.k@kzt.kz',              dob:'28.11.1997', hired:'01.03.2023', grade:'С3', status:'Активен',   category:'Специалист',        exp:'3 года', note:'', kpiPlan:8,  kpiFact:5.9  },
+  { id:'cpp-19', name:'Жаксыбекова Лейла Асхатовна',    role:'Менеджер по продажам',          dept:'ЦПП',  region:'Шымкент',   phone:'+7 705 100-03-05', email:'zhaksybek.l@kzt.kz',             dob:'16.04.1993', hired:'01.07.2019', grade:'С2', status:'Активен',   category:'Специалист',        exp:'7 лет',  note:'', kpiPlan:10, kpiFact:9.2  },
+  { id:'cpp-20', name:'Тулегенов Нурлан Асылбекович',   role:'Менеджер по работе с клиентами',dept:'ЦПП',  region:'Шымкент',   phone:'+7 705 100-03-06', email:'tulegenov.nl@kzt.kz',            dob:'05.02.1996', hired:'15.08.2022', grade:'С2', status:'Активен',   category:'Специалист',        exp:'4 года', note:'', kpiPlan:8,  kpiFact:7.5  },
+  // ЦПП — Қарағанды
+  { id:'cpp-21', name:'Ержанова Акнур Маратовна',       role:'Ст. менеджер по продажам',      dept:'ЦПП',  region:'Қарағанды', phone:'+7 721 100-04-01', email:'erzhanova.a@kzt.kz',             dob:'22.10.1989', hired:'01.03.2015', grade:'С1', status:'Активен',   category:'Старший специалист', exp:'11 лет', note:'', kpiPlan:12, kpiFact:11.7 },
+  { id:'cpp-22', name:'Нурланов Талгат Жандосович',     role:'Менеджер по продажам',          dept:'ЦПП',  region:'Қарағанды', phone:'+7 721 100-04-02', email:'nurlanov.t@kzt.kz',              dob:'31.05.1993', hired:'01.09.2019', grade:'С2', status:'Активен',   category:'Специалист',        exp:'7 лет',  note:'', kpiPlan:10, kpiFact:9.0  },
+  { id:'cpp-23', name:'Тлеубергенова Маржан Серіккызы', role:'Менеджер по работе с клиентами',dept:'ЦПП',  region:'Қарағанды', phone:'+7 721 100-04-03', email:'tleuberk.m@kzt.kz',              dob:'13.07.1995', hired:'15.02.2021', grade:'С2', status:'Активен',   category:'Специалист',        exp:'5 лет',  note:'', kpiPlan:9,  kpiFact:8.3  },
+  { id:'cpp-24', name:'Оспанов Самат Болатович',        role:'Менеджер по продажам',          dept:'ЦПП',  region:'Қарағанды', phone:'+7 721 100-04-04', email:'ospanov.sam@kzt.kz',             dob:'04.12.1994', hired:'01.05.2020', grade:'С2', status:'Активен',   category:'Специалист',        exp:'6 лет',  note:'', kpiPlan:9,  kpiFact:8.8  },
+  { id:'cpp-25', name:'Джаксыбекова Дина Руслановна',   role:'Менеджер по продажам',          dept:'ЦПП',  region:'Қарағанды', phone:'+7 721 100-04-05', email:'dzhaksybek.d@kzt.kz',            dob:'19.03.1996', hired:'01.11.2021', grade:'С2', status:'Активен',   category:'Специалист',        exp:'5 лет',  note:'', kpiPlan:9,  kpiFact:6.8  },
+  { id:'cpp-26', name:'Касымов Асхат Ерланович',        role:'Менеджер по работе с клиентами',dept:'ЦПП',  region:'Қарағанды', phone:'+7 721 100-04-06', email:'kasymov.ash@kzt.kz',             dob:'27.01.1991', hired:'10.01.2017', grade:'С1', status:'Активен',   category:'Старший специалист', exp:'9 лет',  note:'', kpiPlan:11, kpiFact:10.6 },
+  // ЦПП — Атырау
+  { id:'cpp-27', name:'Бекова Айша Нурлановна',         role:'Ст. менеджер по продажам',      dept:'ЦПП',  region:'Атырау',    phone:'+7 712 100-05-01', email:'bekova.aish@kzt.kz',             dob:'08.09.1990', hired:'15.06.2015', grade:'С1', status:'Активен',   category:'Старший специалист', exp:'11 лет', note:'', kpiPlan:11, kpiFact:10.3 },
+  { id:'cpp-28', name:'Мухамедов Ерлан Болатович',      role:'Менеджер по продажам',          dept:'ЦПП',  region:'Атырау',    phone:'+7 712 100-05-02', email:'muhamedov.e@kzt.kz',             dob:'15.04.1994', hired:'01.04.2020', grade:'С2', status:'Активен',   category:'Специалист',        exp:'6 лет',  note:'', kpiPlan:9,  kpiFact:7.7  },
+  { id:'cpp-29', name:'Искакова Жансая Тимуровна',      role:'Менеджер по продажам',          dept:'ЦПП',  region:'Атырау',    phone:'+7 712 100-05-03', email:'iskakova.zh@kzt.kz',             dob:'03.02.1996', hired:'01.09.2021', grade:'С2', status:'Активен',   category:'Специалист',        exp:'5 лет',  note:'', kpiPlan:8,  kpiFact:8.1  },
+  { id:'cpp-30', name:'Сабитова Динара Асхатовна',      role:'Менеджер по работе с клиентами',dept:'ЦПП',  region:'Атырау',    phone:'+7 712 100-05-04', email:'sabitova.d@kzt.kz',              dob:'21.06.1993', hired:'10.02.2019', grade:'С2', status:'Активен',   category:'Специалист',        exp:'7 лет',  note:'', kpiPlan:9,  kpiFact:8.4  },
+  { id:'cpp-31', name:'Кенжебаева Алия Сейткалиевна',   role:'Менеджер по продажам',          dept:'ЦПП',  region:'Атырау',    phone:'+7 712 100-05-05', email:'kenzhebay.a@kzt.kz',             dob:'17.10.1997', hired:'15.03.2023', grade:'С3', status:'Активен',   category:'Специалист',        exp:'3 года', note:'', kpiPlan:7,  kpiFact:6.5  },
+  { id:'cpp-32', name:'Мухамедова Зарина Жандосовна',   role:'Менеджер по работе с клиентами',dept:'ЦПП',  region:'Атырау',    phone:'+7 712 100-05-06', email:'muhamedova.z@kzt.kz',            dob:'09.05.1995', hired:'01.06.2020', grade:'С2', status:'Декрет',    category:'Специалист',        exp:'6 лет',  note:'', kpiPlan:0,  kpiFact:0    },
+  { id:'cpp-33', name:'Байжанова Самал Нурлановна',     role:'Менеджер по продажам',          dept:'ЦПП',  region:'Атырау',    phone:'+7 712 100-05-07', email:'baizhanova.s@kzt.kz',            dob:'26.08.1992', hired:'01.10.2018', grade:'С1', status:'Активен',   category:'Старший специалист', exp:'8 лет',  note:'', kpiPlan:10, kpiFact:9.7  },
   // ЦКБ
-  { name:'Ахметов Тимур Болатович', role:'Начальник ЦКБ', dept:'ЦКБ', region:'Алматы', phone:'+7 727 258-03-00', email:'ahmetov.t@kazakhtelecom.kz', avatar:'АТ' },
-  { name:'Серікова Дина Аскаровна', role:'Ст. менеджер ЦКБ', dept:'ЦКБ', region:'Алматы', phone:'+7 700 200-01-01', email:'serikova.d@kz', avatar:'СД' },
-  { name:'Байжанов Руслан', role:'Менеджер ЦКБ', dept:'ЦКБ', region:'Астана', phone:'+7 700 200-01-02', email:'baizhanov.r@kz', avatar:'БР' },
+  { id:'ckb-0',  name:'Ахметов Тимур Болатович',        role:'Начальник ЦКБ',                 dept:'ЦКБ',  region:'Алматы',    phone:'+7 727 258-03-00', email:'ahmetov.t@kazakhtelecom.kz',     dob:'02.06.1978', hired:'01.03.2011', grade:'В1', status:'Активен',   category:'Руководитель',      exp:'15 лет', note:'' },
+  { id:'ckb-1',  name:'Серікова Дина Аскаровна',        role:'Ст. менеджер ЦКБ',              dept:'ЦКБ',  region:'Алматы',    phone:'+7 700 200-01-01', email:'serikova.d@kzt.kz',              dob:'11.03.1988', hired:'01.05.2014', grade:'С1', status:'Активен',   category:'Старший специалист', exp:'12 лет', note:'' },
+  { id:'ckb-2',  name:'Байжанов Руслан Асхатович',      role:'Менеджер ЦКБ',                  dept:'ЦКБ',  region:'Астана',    phone:'+7 700 200-01-02', email:'baizhanov.r@kzt.kz',             dob:'24.09.1993', hired:'01.07.2020', grade:'С2', status:'Активен',   category:'Специалист',        exp:'6 лет',  note:'' },
   // ОАПК
-  { name:'Жаксыбекова Гульзат Маратовна', role:'Начальник ОАПК', dept:'ОАПК', region:'Алматы', phone:'+7 727 258-04-00', email:'zhaksybek.g@kazakhtelecom.kz', avatar:'ЖГ' },
-  { name:'Оспанов Самат', role:'Аналитик ОАПК', dept:'ОАПК', region:'Алматы', phone:'+7 700 300-01-01', email:'ospanov.s@kz', avatar:'ОС' },
-  { name:'Бекова Айша', role:'Аналитик KPI', dept:'ОАПК', region:'Алматы', phone:'+7 700 300-01-02', email:'bekova.a@kz', avatar:'БА' },
+  { id:'oapk-0', name:'Жаксыбекова Гульзат Маратовна',  role:'Начальник ОАПК',                dept:'ОАПК', region:'Алматы',    phone:'+7 727 258-04-00', email:'zhaksybek.g@kazakhtelecom.kz',   dob:'19.07.1982', hired:'01.09.2013', grade:'В1', status:'Активен',   category:'Руководитель',      exp:'13 лет', note:'' },
+  { id:'oapk-1', name:'Оспанов Самат Нурланович',       role:'Аналитик ОАПК',                 dept:'ОАПК', region:'Алматы',    phone:'+7 700 300-01-01', email:'ospanov.s@kzt.kz',               dob:'07.12.1991', hired:'01.02.2018', grade:'С1', status:'Активен',   category:'Старший специалист', exp:'8 лет',  note:'' },
+  { id:'oapk-2', name:'Бекова Айша Тимуровна',          role:'Аналитик KPI',                  dept:'ОАПК', region:'Алматы',    phone:'+7 700 300-01-02', email:'bekova.aish@kzt.kz',             dob:'15.05.1994', hired:'01.03.2020', grade:'С2', status:'Активен',   category:'Специалист',        exp:'6 лет',  note:'' },
   // ОПиМ
-  { name:'Тулегенов Нурлан Рашидович', role:'Начальник ОПиМ', dept:'ОПиМ', region:'Алматы', phone:'+7 727 258-05-00', email:'tulegenov.n@kazakhtelecom.kz', avatar:'ТН' },
-  { name:'Мухамедов Ерлан', role:'Менеджер по маркетингу', dept:'ОПиМ', region:'Алматы', phone:'+7 700 400-01-01', email:'muhamedov.e@kz', avatar:'МЕ' },
-  { name:'Искакова Жансая', role:'Менеджер по продвижению', dept:'ОПиМ', region:'Астана', phone:'+7 700 400-01-02', email:'iskakova.zh@kz', avatar:'ИЖ' },
+  { id:'opim-0', name:'Тулегенов Нурлан Рашидович',     role:'Начальник ОПиМ',                dept:'ОПиМ', region:'Алматы',    phone:'+7 727 258-05-00', email:'tulegenov.n@kazakhtelecom.kz',   dob:'28.04.1980', hired:'01.06.2012', grade:'В1', status:'Активен',   category:'Руководитель',      exp:'14 лет', note:'' },
+  { id:'opim-1', name:'Мухамедов Ерлан Асылович',       role:'Менеджер по маркетингу',        dept:'ОПиМ', region:'Алматы',    phone:'+7 700 400-01-01', email:'muhamedov.erl@kzt.kz',           dob:'13.02.1993', hired:'01.08.2019', grade:'С2', status:'Активен',   category:'Специалист',        exp:'7 лет',  note:'' },
+  { id:'opim-2', name:'Искакова Жансая Болатовна',      role:'Менеджер по продвижению',       dept:'ОПиМ', region:'Астана',    phone:'+7 700 400-01-02', email:'iskakova.zhb@kzt.kz',            dob:'06.08.1995', hired:'15.01.2021', grade:'С2', status:'Активен',   category:'Специалист',        exp:'5 лет',  note:'' },
 ];
 
 // ===================== DATA =====================
@@ -1745,35 +1816,135 @@ function filterDirectory() {
   const q = document.getElementById('dir-search').value.toLowerCase();
   const dept = document.getElementById('dir-filter-dept').value;
   const region = document.getElementById('dir-filter-region').value;
+  const status = document.getElementById('dir-filter-status').value;
   const filtered = directoryData.filter(p => {
-    const matchQ = !q || p.name.toLowerCase().includes(q) || p.role.toLowerCase().includes(q) || p.region.toLowerCase().includes(q);
+    const matchQ = !q || p.name.toLowerCase().includes(q) || p.role.toLowerCase().includes(q) || p.region.toLowerCase().includes(q) || (p.dept||'').toLowerCase().includes(q);
     const matchDept = !dept || p.dept === dept;
     const matchRegion = !region || p.region === region;
-    return matchQ && matchDept && matchRegion;
+    const matchStatus = !status || p.status === status;
+    return matchQ && matchDept && matchRegion && matchStatus;
   });
+  const rc = document.getElementById('dir-results-count');
+  if (rc) rc.textContent = `Найдено: ${filtered.length} сотрудников`;
   renderDirectory(filtered);
 }
 
+const DEPT_COLORS = { 'ЦПП':'#0066CC', 'ЦКБ':'#7c3aed', 'ОАПК':'#0891b2', 'ОПиМ':'#059669', 'ДКБ':'#dc2626' };
+const STATUS_COLORS = { 'Активен':'var(--success)', 'Декрет':'var(--warning)', 'Отпуск':'var(--primary)', 'Уволен':'var(--danger)' };
+
 function renderDirectory(list) {
-  const deptColors = { 'ЦПП':'#0066CC', 'ЦКБ':'#7c3aed', 'ОАПК':'#0891b2', 'ОПиМ':'#059669', 'ДКБ':'#dc2626' };
   const grid = document.getElementById('dir-grid');
   if (!list.length) { grid.innerHTML = '<div style="color:var(--gray-400);padding:20px;text-align:center">Ничего не найдено</div>'; return; }
   grid.innerHTML = list.map((p, i) => {
-    const color = deptColors[p.dept] || '#6b7280';
+    const color = DEPT_COLORS[p.dept] || '#6b7280';
     const bg = p.isMe ? 'linear-gradient(135deg,#0066CC,#004d99)' : AVATAR_COLORS[i % AVATAR_COLORS.length];
-    return `<div class="dir-card" ${p.isMe ? 'style="border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-light)"' : ''}>
-      <div class="dir-avatar" style="background:${bg}">${p.avatar}</div>
+    const initials = p.isMe ? 'ВЫ' : mkavatar(p.name);
+    const statusColor = STATUS_COLORS[p.status] || 'var(--gray-500)';
+    const kpiHtml = (p.kpiPlan > 0) ? `<div style="margin-top:6px;font-size:11px">
+      <span style="color:var(--gray-500)">KPI: </span>
+      <span style="font-weight:700;color:${p.kpiFact/p.kpiPlan>=0.9?'var(--success)':p.kpiFact/p.kpiPlan>=0.7?'var(--warning)':'var(--danger)'}">
+        ${p.kpiFact} / ${p.kpiPlan} млн ₸ (${Math.round(p.kpiFact/p.kpiPlan*100)}%)
+      </span></div>` : '';
+    return `<div class="dir-card" onclick="openHrModal('${p.id}')" ${p.isMe?'style="border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-light)"':''}>
+      <div class="dir-avatar" style="background:${bg};font-size:${p.isMe?'14px':'18px'}">${initials}</div>
       <div class="dir-info">
         <div class="dir-name">${p.name}${p.isMe?' ⭐':''}</div>
-        <div class="dir-role">${p.role}</div>
-        <span class="dir-dept-tag" style="background:${color}18;color:${color}">${p.dept} · ${p.region}</span>
-        <div class="dir-contact">
-          <span>📞 ${p.phone}</span>
+        <div class="dir-role" style="font-size:11px;color:var(--gray-500)">${p.role}</div>
+        <div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap">
+          <span class="dir-dept-tag" style="background:${color}18;color:${color}">${p.dept}</span>
+          <span class="dir-dept-tag" style="background:var(--gray-100);color:var(--gray-600)">📍${p.region}</span>
+          <span class="dir-dept-tag" style="background:${statusColor}18;color:${statusColor}">● ${p.status}</span>
+        </div>
+        <div class="dir-contact" style="margin-top:6px">
+          <span>📞 ${p.phone}</span><br>
           <span>✉️ ${p.email}</span>
         </div>
+        ${kpiHtml}
       </div>
     </div>`;
   }).join('');
+}
+
+function openHrModal(id) {
+  const p = directoryData.find(x => x.id === id);
+  if (!p) return;
+  const color = DEPT_COLORS[p.dept] || '#6b7280';
+  const bg = p.isMe ? 'linear-gradient(135deg,#0066CC,#004d99)' : color;
+  const initials = p.isMe ? 'ВЫ' : mkavatar(p.name);
+  const statusColor = STATUS_COLORS[p.status] || 'var(--gray-500)';
+  const catColors = { 'Топ-менеджмент':'#7c3aed', 'Руководитель':'#0066CC', 'Старший специалист':'#059669', 'Специалист':'#d97706' };
+  const catColor = catColors[p.category] || '#6b7280';
+
+  let kpiSection = '';
+  if (p.kpiPlan > 0) {
+    const pct = Math.round(p.kpiFact / p.kpiPlan * 100);
+    const kpiColor = pct >= 90 ? 'var(--success)' : pct >= 70 ? 'var(--warning)' : 'var(--danger)';
+    kpiSection = `
+    <div class="hr-section">
+      <div class="hr-section-title">📊 KPI — Май 2026</div>
+      <div class="hr-kpi-row">
+        <div class="hr-kpi-box"><div class="v" style="color:var(--primary)">${p.kpiPlan}</div><div class="l">План (млн ₸)</div></div>
+        <div class="hr-kpi-box"><div class="v" style="color:${kpiColor}">${p.kpiFact}</div><div class="l">Факт (млн ₸)</div></div>
+        <div class="hr-kpi-box"><div class="v" style="color:${kpiColor}">${pct}%</div><div class="l">Выполнение</div></div>
+      </div>
+      <div style="height:8px;background:var(--gray-100);border-radius:4px;overflow:hidden;margin-top:4px">
+        <div style="width:${Math.min(pct,100)}%;height:100%;background:${kpiColor};border-radius:4px"></div>
+      </div>
+    </div>`;
+  }
+
+  document.getElementById('modal-emp-name').textContent = p.name;
+  document.getElementById('modal-body').innerHTML = `
+    <div class="hr-top">
+      <div class="hr-avatar-big" style="background:${bg}">${initials}</div>
+      <div class="hr-main-info">
+        <div class="hr-full-name">${p.name}${p.isMe?' ⭐':''}</div>
+        <div class="hr-role-line">${p.role}</div>
+        <div class="hr-tags">
+          <span class="hr-tag" style="background:${color}18;color:${color}">${p.dept}</span>
+          <span class="hr-tag" style="background:var(--gray-100);color:var(--gray-600)">📍 ${p.region}</span>
+          <span class="hr-tag" style="background:${statusColor}18;color:${statusColor}">● ${p.status}</span>
+          <span class="hr-tag" style="background:${catColor}18;color:${catColor}">${p.category}</span>
+          ${p.grade ? `<span class="hr-tag" style="background:#f1f5f9;color:#475569">Грейд: ${p.grade}</span>` : ''}
+        </div>
+      </div>
+    </div>
+    <div class="hr-section">
+      <div class="hr-section-title">👤 Личные данные</div>
+      <div class="hr-fields">
+        <div class="hr-field"><div class="hr-field-label">Дата рождения</div><div class="hr-field-value">${p.dob}</div></div>
+        <div class="hr-field"><div class="hr-field-label">Дата приёма на работу</div><div class="hr-field-value">${p.hired}</div></div>
+        <div class="hr-field"><div class="hr-field-label">Стаж в компании</div><div class="hr-field-value">${p.exp}</div></div>
+        <div class="hr-field"><div class="hr-field-label">Грейд</div><div class="hr-field-value">${p.grade || '—'}</div></div>
+      </div>
+    </div>
+    <div class="hr-section">
+      <div class="hr-section-title">📞 Контактные данные</div>
+      <div class="hr-fields">
+        <div class="hr-field"><div class="hr-field-label">Телефон</div><div class="hr-field-value">${p.phone}</div></div>
+        <div class="hr-field"><div class="hr-field-label">Email</div><div class="hr-field-value" style="font-size:12px">${p.email}</div></div>
+        <div class="hr-field"><div class="hr-field-label">Отдел</div><div class="hr-field-value">${p.dept}</div></div>
+        <div class="hr-field"><div class="hr-field-label">Регион</div><div class="hr-field-value">${p.region}</div></div>
+      </div>
+    </div>
+    ${kpiSection}
+    <div class="hr-section">
+      <div class="hr-section-title">📝 Заметки руководителя</div>
+      <textarea class="hr-note-area" id="hr-note-${p.id}" placeholder="Добавьте заметку о сотруднике...">${p.note||''}</textarea>
+      <div style="display:flex;justify-content:flex-end;margin-top:8px">
+        <button class="btn btn-primary btn-sm" onclick="saveHrNote('${p.id}')">💾 Сохранить заметку</button>
+      </div>
+    </div>`;
+  document.getElementById('emp-modal').classList.remove('hidden');
+}
+
+function saveHrNote(id) {
+  const p = directoryData.find(x => x.id === id);
+  if (!p) return;
+  p.note = document.getElementById(`hr-note-${p.id}`).value;
+  const btn = event.target;
+  btn.textContent = '✅ Сохранено';
+  setTimeout(() => btn.textContent = '💾 Сохранить заметку', 2000);
 }
 
 // ====== INIT ======
@@ -1796,7 +1967,9 @@ function init() {
   renderMonthPlan();
   renderMyTasks();
   renderOrgStructure();
-  renderDirectory(directoryData);
+  filterDirectory();
+  const dt = document.getElementById('dir-total');
+  if (dt) dt.textContent = directoryData.length;
   renderQuickPrompts();
   if (apiKey) document.getElementById('api-banner').style.display = 'none';
 }
