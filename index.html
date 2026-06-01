@@ -539,6 +539,160 @@
 
   .page { display: none; }
   .page.active { display: block; }
+
+  /* ORG STRUCTURE */
+  .org-tree { display: flex; flex-direction: column; align-items: center; gap: 0; }
+  .org-level { display: flex; justify-content: center; gap: 16px; position: relative; margin-bottom: 0; }
+  .org-connector-v { width: 2px; height: 28px; background: var(--gray-300); margin: 0 auto; }
+  .org-connector-h-wrap { display: flex; align-items: flex-start; justify-content: center; position: relative; gap: 0; }
+  .org-node {
+    background: #fff;
+    border: 2px solid var(--gray-200);
+    border-radius: 10px;
+    padding: 10px 14px;
+    min-width: 160px;
+    max-width: 190px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .org-node:hover { border-color: var(--primary); box-shadow: 0 4px 12px rgba(0,102,204,0.15); transform: translateY(-2px); }
+  .org-node.top { border-color: var(--primary); background: var(--primary); color: #fff; }
+  .org-node.top .org-pos { color: rgba(255,255,255,0.75); }
+  .org-node.mid { border-color: #7c3aed; }
+  .org-node.mid .org-name { color: #5b21b6; }
+  .org-node.dept-head { border-color: var(--primary); }
+  .org-node.dept-head .org-name { color: var(--primary-dark); }
+  .org-name { font-size: 12px; font-weight: 700; line-height: 1.3; }
+  .org-pos { font-size: 10px; color: var(--gray-500); margin-top: 3px; line-height: 1.3; }
+  .org-region-tag { font-size: 9px; background: var(--primary-light); color: var(--primary); padding: 1px 6px; border-radius: 8px; margin-top: 4px; display: inline-block; }
+
+  /* STAFF DIRECTORY */
+  .dir-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+  .dir-card {
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+  .dir-card:hover { border-color: var(--primary); box-shadow: 0 4px 12px rgba(0,102,204,0.1); }
+  .dir-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    font-weight: 700;
+    color: #fff;
+  }
+  .dir-info { flex: 1; min-width: 0; }
+  .dir-name { font-size: 13px; font-weight: 700; color: var(--gray-900); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dir-role { font-size: 11px; color: var(--gray-500); margin-top: 2px; }
+  .dir-contact { font-size: 11px; color: var(--primary); margin-top: 6px; }
+  .dir-contact span { margin-right: 10px; }
+  .dir-dept-tag { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 8px; margin-top: 5px; font-weight: 600; }
+
+  /* MY TASKS DASHBOARD */
+  .mytasks-header { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+  .mytask-stat {
+    flex: 1;
+    min-width: 120px;
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid var(--gray-200);
+    padding: 14px 16px;
+    text-align: center;
+  }
+  .mytask-stat .val { font-size: 28px; font-weight: 800; }
+  .mytask-stat .lbl { font-size: 11px; color: var(--gray-500); margin-top: 3px; }
+  .task-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .task-col { background: var(--gray-50); border-radius: 12px; padding: 14px; min-height: 300px; }
+  .task-col-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .task-col-count {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+  }
+  .col-new .task-col-title { color: var(--primary); }
+  .col-new .task-col-count { background: var(--primary-light); color: var(--primary); }
+  .col-progress .task-col-title { color: var(--warning); }
+  .col-progress .task-col-count { background: var(--warning-bg); color: var(--warning); }
+  .col-done .task-col-title { color: var(--success); }
+  .col-done .task-col-count { background: var(--success-bg); color: var(--success); }
+  .task-card {
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid var(--gray-200);
+    padding: 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .task-card:hover { border-color: var(--primary); box-shadow: 0 2px 8px rgba(0,102,204,0.12); }
+  .task-card-title { font-size: 13px; font-weight: 600; color: var(--gray-800); margin-bottom: 6px; }
+  .task-card-from { font-size: 11px; color: var(--gray-500); margin-bottom: 6px; }
+  .task-card-from span { color: var(--primary); font-weight: 600; }
+  .task-card-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .task-prio {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 8px;
+  }
+  .prio-high { background: var(--danger-bg); color: var(--danger); }
+  .prio-mid  { background: var(--warning-bg); color: var(--warning); }
+  .prio-low  { background: var(--success-bg); color: var(--success); }
+  .task-deadline { font-size: 10px; color: var(--gray-500); }
+  .task-deadline.overdue { color: var(--danger); font-weight: 600; }
+  .task-move-btns { display: flex; gap: 6px; margin-top: 10px; }
+  .task-move-btn {
+    flex: 1;
+    padding: 4px 8px;
+    font-size: 11px;
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-weight: 600;
+  }
+  .task-move-btn:hover { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
+  .add-mytask-form {
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid var(--gray-200);
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  .add-mytask-form .form-row { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; align-items: end; }
+  .form-row input, .form-row select {
+    padding: 8px 12px;
+    border: 1px solid var(--gray-200);
+    border-radius: 7px;
+    font-size: 13px;
+    outline: none;
+    width: 100%;
+  }
+  .form-row input:focus, .form-row select:focus { border-color: var(--primary); }
 </style>
 </head>
 <body>
@@ -566,6 +720,16 @@
   </div>
   <div class="nav-item" data-page="month" onclick="navigate('month')">
     <span class="icon">🗓️</span> Месячный план
+  </div>
+  <div class="nav-section-title">Структура</div>
+  <div class="nav-item" data-page="mytasks" onclick="navigate('mytasks')">
+    <span class="icon">🎯</span> Мои задачи
+  </div>
+  <div class="nav-item" data-page="orgstructure" onclick="navigate('orgstructure')">
+    <span class="icon">🏢</span> Структура ДКБ
+  </div>
+  <div class="nav-item" data-page="directory" onclick="navigate('directory')">
+    <span class="icon">📒</span> Справочник
   </div>
   <div class="nav-section-title">Инструменты</div>
   <div class="nav-item" data-page="chat" onclick="navigate('chat')">
@@ -687,6 +851,71 @@
       <div class="month-grid" id="month-grid"></div>
     </div>
 
+    <!-- ====== MY TASKS ====== -->
+    <div class="page" id="page-mytasks">
+      <div class="add-mytask-form">
+        <div style="font-size:13px;font-weight:700;color:var(--gray-700);margin-bottom:12px">➕ Новая задача от руководителя</div>
+        <div class="form-row">
+          <div><label style="font-size:11px;color:var(--gray-500);display:block;margin-bottom:4px">Задача</label><input type="text" id="new-task-title" placeholder="Название задачи..."></div>
+          <div><label style="font-size:11px;color:var(--gray-500);display:block;margin-bottom:4px">От кого</label>
+            <select id="new-task-from">
+              <option>Директор ДКБ</option>
+              <option>Зам. директора ДКБ</option>
+              <option>Руководитель коммерческого блока</option>
+              <option>Другое</option>
+            </select>
+          </div>
+          <div><label style="font-size:11px;color:var(--gray-500);display:block;margin-bottom:4px">Срок</label><input type="date" id="new-task-date"></div>
+          <div style="display:flex;gap:6px;align-items:flex-end">
+            <select id="new-task-prio" style="padding:8px 10px;border:1px solid var(--gray-200);border-radius:7px;font-size:12px;outline:none">
+              <option value="high">🔴 Высокий</option>
+              <option value="mid" selected>🟡 Средний</option>
+              <option value="low">🟢 Низкий</option>
+            </select>
+            <button class="btn btn-primary" onclick="addMyTask()">Добавить</button>
+          </div>
+        </div>
+      </div>
+      <div class="mytasks-header" id="mytasks-stats"></div>
+      <div class="task-board" id="task-board"></div>
+    </div>
+
+    <!-- ====== ORG STRUCTURE ====== -->
+    <div class="page" id="page-orgstructure">
+      <div class="card" style="overflow-x:auto">
+        <div class="card-title"><span class="icon">🏢</span> Организационная структура коммерческого блока ДКБ</div>
+        <div id="org-tree-container" style="padding:10px 0;min-width:900px"></div>
+      </div>
+      <div class="card" style="margin-top:0">
+        <div class="card-title"><span class="icon">📋</span> Положения и регламенты</div>
+        <div id="regulations-list"></div>
+      </div>
+    </div>
+
+    <!-- ====== DIRECTORY ====== -->
+    <div class="page" id="page-directory">
+      <div class="toolbar" style="margin-bottom:16px">
+        <input class="search-input" placeholder="🔍 Поиск по имени, должности, регион..." oninput="filterDirectory()" id="dir-search">
+        <select class="filter-select" onchange="filterDirectory()" id="dir-filter-dept">
+          <option value="">Все отделы</option>
+          <option value="ЦПП">ЦПП</option>
+          <option value="ЦКБ">ЦКБ</option>
+          <option value="ОАПК">ОАПК</option>
+          <option value="ОПиМ">ОПиМ</option>
+          <option value="ДКБ">ДКБ (Руководство)</option>
+        </select>
+        <select class="filter-select" onchange="filterDirectory()" id="dir-filter-region">
+          <option value="">Все регионы</option>
+          <option value="Алматы">Алматы</option>
+          <option value="Астана">Астана</option>
+          <option value="Шымкент">Шымкент</option>
+          <option value="Қарағанды">Қарағанды</option>
+          <option value="Атырау">Атырау</option>
+        </select>
+      </div>
+      <div class="dir-grid" id="dir-grid"></div>
+    </div>
+
     <!-- ====== AI CHAT ====== -->
     <div class="page" id="page-chat">
       <div class="api-banner" id="api-banner">
@@ -740,6 +969,77 @@
 </div>
 
 <script>
+// ===================== MY TASKS DATA =====================
+let myTasks = [
+  { id:1, title:'Подготовить аналитический отчёт по выполнению плана продаж за май', from:'Директор ДКБ', deadline:'2026-06-03', prio:'high', status:'new', comment:'' },
+  { id:2, title:'Провести встречу с командой по итогам I полугодия', from:'Зам. директора ДКБ', deadline:'2026-06-05', prio:'high', status:'progress', comment:'' },
+  { id:3, title:'Подготовить список менеджеров на премирование', from:'Директор ДКБ', deadline:'2026-06-07', prio:'mid', status:'new', comment:'' },
+  { id:4, title:'Согласовать план продаж на июль по всем регионам', from:'Руководитель коммерческого блока', deadline:'2026-06-10', prio:'mid', status:'progress', comment:'' },
+  { id:5, title:'Разработать мероприятия по удержанию клиентской базы', from:'Зам. директора ДКБ', deadline:'2026-06-15', prio:'low', status:'new', comment:'' },
+  { id:6, title:'Проверить корректность данных по SLA за май', from:'Директор ДКБ', deadline:'2026-05-30', prio:'high', status:'done', comment:'Выполнено, отчёт направлен' },
+  { id:7, title:'Обновить состав рабочей группы по проекту CRM', from:'Руководитель коммерческого блока', deadline:'2026-05-28', prio:'mid', status:'done', comment:'' },
+];
+let myTaskCounter = myTasks.length + 1;
+
+// ===================== ORG DATA =====================
+const orgStructure = {
+  top: { name:'Директор ДКБ', person:'Серікбай А.Б.', level:'top' },
+  mid: [
+    { name:'Зам. директора ДКБ', person:'Мусаев К.Е.', level:'mid' },
+    { name:'Руководитель коммерч. блока', person:'Нурмаганбет Д.С.', level:'mid' },
+  ],
+  depts: [
+    { name:'ЦПП', fullname:'Центр продаж и поддержки', head:'Начальник ЦПП (Вы)', color:'#0066CC', regions:['Алматы','Астана','Шымкент','Қарағанды','Атырау'], staff:33 },
+    { name:'ЦКБ', fullname:'Центр корпоративного бизнеса', head:'Ахметов Т.Б.', color:'#7c3aed', regions:['Алматы','Астана'], staff:18 },
+    { name:'ОАПК', fullname:'Отдел анализа и планирования KPI', head:'Жаксыбекова Г.М.', color:'#0891b2', regions:['Все регионы'], staff:8 },
+    { name:'ОПиМ', fullname:'Отдел продаж и маркетинга', head:'Тулегенов Н.Р.', color:'#059669', regions:['Алматы','Астана','Шымкент'], staff:12 },
+  ]
+};
+
+const regulations = [
+  { icon:'📄', title:'Положение о ЦПП ДКБ', desc:'Регулирует функции, полномочия и задачи Центра продаж и поддержки', date:'01.01.2026', status:'Действует' },
+  { icon:'📄', title:'Положение о коммерческом блоке ДКБ', desc:'Структура, цели и KPI коммерческого блока Дирекции корпоративного бизнеса', date:'01.01.2026', status:'Действует' },
+  { icon:'📋', title:'Регламент постановки задач менеджерам', desc:'Порядок делегирования, постановки и контроля задач менеджерам ЦПП', date:'01.03.2026', status:'Действует' },
+  { icon:'📋', title:'Регламент отчётности ЦПП', desc:'Формы и сроки подачи ежедневных, еженедельных и месячных отчётов', date:'15.02.2026', status:'Действует' },
+  { icon:'📊', title:'Методика расчёта KPI', desc:'Формулы, веса и пороговые значения KPI для сотрудников и руководителей ЦПП', date:'01.01.2026', status:'Действует' },
+  { icon:'👥', title:'Положение о премировании', desc:'Критерии начисления и размеры премий для менеджеров по продажам', date:'01.04.2026', status:'Действует' },
+  { icon:'📝', title:'Инструкция по работе с CRM', desc:'Порядок ведения клиентской базы, создания сделок и обработки заявок', date:'01.02.2026', status:'Действует' },
+  { icon:'🔒', title:'Политика информационной безопасности', desc:'Правила работы с конфиденциальными данными и клиентской информацией', date:'01.01.2026', status:'Действует' },
+];
+
+// ===================== DIRECTORY DATA =====================
+const AVATAR_COLORS = ['#0066CC','#7c3aed','#059669','#dc2626','#d97706','#0891b2','#db2777'];
+const directoryData = [
+  // ДКБ Руководство
+  { name:'Серікбай Аскар Болатович', role:'Директор ДКБ', dept:'ДКБ', region:'Алматы', phone:'+7 727 258-01-01', email:'serikbay@kazakhtelecom.kz', avatar:'СА' },
+  { name:'Мусаев Канат Ерланович', role:'Зам. директора ДКБ', dept:'ДКБ', region:'Алматы', phone:'+7 727 258-01-02', email:'musaev@kazakhtelecom.kz', avatar:'МК' },
+  { name:'Нурмаганбет Дамир Сейткалиевич', role:'Рук. коммерческого блока', dept:'ДКБ', region:'Алматы', phone:'+7 727 258-01-03', email:'nurmaganbetd@kazakhtelecom.kz', avatar:'НД' },
+  // ЦПП
+  { name:'Вы (Начальник ЦПП)', role:'Начальник ЦПП ДКБ', dept:'ЦПП', region:'Алматы', phone:'+7 727 258-02-00', email:'cpp.dkb@kazakhtelecom.kz', avatar:'НЦ', isMe:true },
+  { name:'Асель Нурланова', role:'Ст. менеджер ЦПП', dept:'ЦПП', region:'Алматы', phone:'+7 700 100-01-01', email:'nurlan.a@kz', avatar:'АН' },
+  { name:'Дамир Сейткали', role:'Менеджер по продажам', dept:'ЦПП', region:'Алматы', phone:'+7 700 100-01-02', email:'seitkali.d@kz', avatar:'ДС' },
+  { name:'Гульнара Бекова', role:'Менеджер по продажам', dept:'ЦПП', region:'Астана', phone:'+7 700 100-01-03', email:'bekova.g@kz', avatar:'ГБ' },
+  { name:'Марат Ахметов', role:'Менеджер по продажам', dept:'ЦПП', region:'Астана', phone:'+7 700 100-01-04', email:'ahmetov.m@kz', avatar:'МА' },
+  { name:'Зарина Тулегенова', role:'Менеджер по работе с кл.', dept:'ЦПП', region:'Шымкент', phone:'+7 700 100-01-05', email:'tulegen.z@kz', avatar:'ЗТ' },
+  { name:'Ерлан Смагулов', role:'Менеджер по продажам', dept:'ЦПП', region:'Шымкент', phone:'+7 700 100-01-06', email:'smagulov.e@kz', avatar:'ЕС' },
+  { name:'Айгуль Жаксыбекова', role:'Менеджер по продажам', dept:'ЦПП', region:'Қарағанды', phone:'+7 700 100-01-07', email:'zhaksybek.a@kz', avatar:'АЖ' },
+  { name:'Нурлан Касымов', role:'Менеджер по работе с кл.', dept:'ЦПП', region:'Қарағанды', phone:'+7 700 100-01-08', email:'kasymov.n@kz', avatar:'НК' },
+  { name:'Динара Сабитова', role:'Менеджер по продажам', dept:'ЦПП', region:'Атырау', phone:'+7 700 100-01-09', email:'sabitova.d@kz', avatar:'ДС' },
+  { name:'Тимур Ержанов', role:'Менеджер по продажам', dept:'ЦПП', region:'Атырау', phone:'+7 700 100-01-10', email:'erzhanov.t@kz', avatar:'ТЕ' },
+  // ЦКБ
+  { name:'Ахметов Тимур Болатович', role:'Начальник ЦКБ', dept:'ЦКБ', region:'Алматы', phone:'+7 727 258-03-00', email:'ahmetov.t@kazakhtelecom.kz', avatar:'АТ' },
+  { name:'Серікова Дина Аскаровна', role:'Ст. менеджер ЦКБ', dept:'ЦКБ', region:'Алматы', phone:'+7 700 200-01-01', email:'serikova.d@kz', avatar:'СД' },
+  { name:'Байжанов Руслан', role:'Менеджер ЦКБ', dept:'ЦКБ', region:'Астана', phone:'+7 700 200-01-02', email:'baizhanov.r@kz', avatar:'БР' },
+  // ОАПК
+  { name:'Жаксыбекова Гульзат Маратовна', role:'Начальник ОАПК', dept:'ОАПК', region:'Алматы', phone:'+7 727 258-04-00', email:'zhaksybek.g@kazakhtelecom.kz', avatar:'ЖГ' },
+  { name:'Оспанов Самат', role:'Аналитик ОАПК', dept:'ОАПК', region:'Алматы', phone:'+7 700 300-01-01', email:'ospanov.s@kz', avatar:'ОС' },
+  { name:'Бекова Айша', role:'Аналитик KPI', dept:'ОАПК', region:'Алматы', phone:'+7 700 300-01-02', email:'bekova.a@kz', avatar:'БА' },
+  // ОПиМ
+  { name:'Тулегенов Нурлан Рашидович', role:'Начальник ОПиМ', dept:'ОПиМ', region:'Алматы', phone:'+7 727 258-05-00', email:'tulegenov.n@kazakhtelecom.kz', avatar:'ТН' },
+  { name:'Мухамедов Ерлан', role:'Менеджер по маркетингу', dept:'ОПиМ', region:'Алматы', phone:'+7 700 400-01-01', email:'muhamedov.e@kz', avatar:'МЕ' },
+  { name:'Искакова Жансая', role:'Менеджер по продвижению', dept:'ОПиМ', region:'Астана', phone:'+7 700 400-01-02', email:'iskakova.zh@kz', avatar:'ИЖ' },
+];
+
 // ===================== DATA =====================
 const REGIONS = ['Алматы','Астана','Шымкент','Қарағанды','Атырау'];
 
@@ -1291,6 +1591,9 @@ const pageTitles = {
   meeting: 'Планёрка',
   week: 'Недельный план',
   month: 'Месячный план',
+  mytasks: 'Мои задачи',
+  orgstructure: 'Структура ДКБ',
+  directory: 'Справочник сотрудников',
   chat: 'AI-чат'
 };
 
@@ -1300,6 +1603,177 @@ function navigate(page) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.querySelector(`[data-page="${page}"]`).classList.add('active');
   document.getElementById('page-title').textContent = pageTitles[page];
+}
+
+// ====== MY TASKS ======
+function renderMyTasks() {
+  const cols = { new: [], progress: [], done: [] };
+  myTasks.forEach(t => cols[t.status].push(t));
+
+  const total = myTasks.length;
+  const overdue = myTasks.filter(t => t.status !== 'done' && t.deadline && new Date(t.deadline) < new Date()).length;
+  document.getElementById('mytasks-stats').innerHTML = `
+    <div class="mytask-stat"><div class="val" style="color:var(--primary)">${cols.new.length}</div><div class="lbl">Новые</div></div>
+    <div class="mytask-stat"><div class="val" style="color:var(--warning)">${cols.progress.length}</div><div class="lbl">В работе</div></div>
+    <div class="mytask-stat"><div class="val" style="color:var(--success)">${cols.done.length}</div><div class="lbl">Выполнено</div></div>
+    <div class="mytask-stat"><div class="val" style="color:var(--danger)">${overdue}</div><div class="lbl">Просрочено</div></div>
+    <div class="mytask-stat"><div class="val">${total}</div><div class="lbl">Всего задач</div></div>`;
+
+  const board = document.getElementById('task-board');
+  board.innerHTML = `
+    <div class="task-col col-new">
+      <div class="task-col-title">📥 Новые <span class="task-col-count">${cols.new.length}</span></div>
+      ${cols.new.map(t => taskCardHtml(t)).join('')}
+    </div>
+    <div class="task-col col-progress">
+      <div class="task-col-title">⚙️ В работе <span class="task-col-count">${cols.progress.length}</span></div>
+      ${cols.progress.map(t => taskCardHtml(t)).join('')}
+    </div>
+    <div class="task-col col-done">
+      <div class="task-col-title">✅ Выполнено <span class="task-col-count">${cols.done.length}</span></div>
+      ${cols.done.map(t => taskCardHtml(t)).join('')}
+    </div>`;
+}
+
+function taskCardHtml(t) {
+  const prioClass = { high:'prio-high', mid:'prio-mid', low:'prio-low' }[t.prio];
+  const prioLabel = { high:'🔴 Высокий', mid:'🟡 Средний', low:'🟢 Низкий' }[t.prio];
+  const now = new Date(); now.setHours(0,0,0,0);
+  const dl = t.deadline ? new Date(t.deadline) : null;
+  const isOverdue = dl && dl < now && t.status !== 'done';
+  const dlStr = dl ? dl.toLocaleDateString('ru-RU') : '—';
+  let moveBtns = '';
+  if (t.status === 'new') moveBtns = `<button class="task-move-btn" onclick="moveTask(${t.id},'progress')">→ В работу</button><button class="task-move-btn" onclick="moveTask(${t.id},'done')">✓ Готово</button>`;
+  if (t.status === 'progress') moveBtns = `<button class="task-move-btn" onclick="moveTask(${t.id},'new')">← Назад</button><button class="task-move-btn" onclick="moveTask(${t.id},'done')">✓ Готово</button>`;
+  if (t.status === 'done') moveBtns = `<button class="task-move-btn" onclick="moveTask(${t.id},'progress')">↩ Вернуть</button>`;
+  return `<div class="task-card">
+    <div class="task-card-title">${t.title}</div>
+    <div class="task-card-from">От: <span>${t.from}</span></div>
+    <div class="task-card-meta">
+      <span class="task-prio ${prioClass}">${prioLabel}</span>
+      <span class="task-deadline ${isOverdue?'overdue':''}">📅 ${dlStr}${isOverdue?' ⚠️ Просрочено':''}</span>
+    </div>
+    ${t.comment ? `<div style="margin-top:7px;font-size:11px;color:var(--gray-500);background:var(--gray-50);padding:5px 8px;border-radius:5px">💬 ${t.comment}</div>` : ''}
+    <div class="task-move-btns">${moveBtns}<button class="task-move-btn" style="color:var(--danger)" onclick="deleteMyTask(${t.id})">🗑</button></div>
+  </div>`;
+}
+
+function moveTask(id, newStatus) {
+  const t = myTasks.find(x => x.id === id);
+  if (t) { t.status = newStatus; renderMyTasks(); }
+}
+
+function deleteMyTask(id) {
+  if (!confirm('Удалить задачу?')) return;
+  myTasks = myTasks.filter(x => x.id !== id);
+  renderMyTasks();
+}
+
+function addMyTask() {
+  const title = document.getElementById('new-task-title').value.trim();
+  const from = document.getElementById('new-task-from').value;
+  const deadline = document.getElementById('new-task-date').value;
+  const prio = document.getElementById('new-task-prio').value;
+  if (!title) { alert('Введите название задачи'); return; }
+  myTasks.unshift({ id: myTaskCounter++, title, from, deadline, prio, status:'new', comment:'' });
+  document.getElementById('new-task-title').value = '';
+  renderMyTasks();
+}
+
+// ====== ORG STRUCTURE ======
+function renderOrgStructure() {
+  const c = document.getElementById('org-tree-container');
+  const t = orgStructure;
+  c.innerHTML = `
+    <div class="org-tree">
+      <div class="org-level">
+        <div class="org-node top">
+          <div class="org-name">${t.top.name}</div>
+          <div class="org-pos">${t.top.person}</div>
+        </div>
+      </div>
+      <div class="org-connector-v"></div>
+      <div style="display:flex;justify-content:center;gap:60px;position:relative">
+        <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);height:1px;background:var(--gray-300);width:45%"></div>
+        ${t.mid.map(m => `
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div class="org-connector-v" style="height:20px"></div>
+          <div class="org-node mid">
+            <div class="org-name" style="color:#5b21b6">${m.name}</div>
+            <div class="org-pos">${m.person}</div>
+          </div>
+        </div>`).join('')}
+      </div>
+      <div class="org-connector-v"></div>
+      <div style="display:flex;justify-content:center;gap:20px;position:relative;flex-wrap:wrap">
+        <div style="position:absolute;top:0;left:10%;right:10%;height:1px;background:var(--gray-300)"></div>
+        ${t.depts.map(d => `
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div class="org-connector-v" style="height:20px"></div>
+          <div class="org-node dept-head" style="border-color:${d.color};min-width:180px">
+            <div style="font-size:16px;margin-bottom:4px">${d.name === 'ЦПП' ? '⭐' : '🏬'}</div>
+            <div class="org-name" style="color:${d.color};font-size:13px">${d.name}</div>
+            <div class="org-pos" style="font-size:10px">${d.fullname}</div>
+            <div class="org-pos" style="margin-top:3px">${d.head}</div>
+            <div style="display:flex;gap:4px;justify-content:center;margin-top:6px;flex-wrap:wrap">
+              ${d.regions.map(r => `<span class="org-region-tag">${r}</span>`).join('')}
+            </div>
+            <div style="margin-top:6px;font-size:10px;color:var(--gray-500)">${d.staff} сотрудников</div>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+
+  // Regulations
+  const reg = document.getElementById('regulations-list');
+  reg.innerHTML = regulations.map(r => `
+    <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--gray-100)">
+      <div style="font-size:22px">${r.icon}</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600;color:var(--gray-800)">${r.title}</div>
+        <div style="font-size:12px;color:var(--gray-500);margin-top:3px">${r.desc}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-size:11px;color:var(--gray-400)">${r.date}</div>
+        <span style="background:var(--success-bg);color:var(--success);font-size:10px;padding:2px 8px;border-radius:8px;font-weight:600">${r.status}</span>
+      </div>
+    </div>`).join('');
+}
+
+// ====== DIRECTORY ======
+function filterDirectory() {
+  const q = document.getElementById('dir-search').value.toLowerCase();
+  const dept = document.getElementById('dir-filter-dept').value;
+  const region = document.getElementById('dir-filter-region').value;
+  const filtered = directoryData.filter(p => {
+    const matchQ = !q || p.name.toLowerCase().includes(q) || p.role.toLowerCase().includes(q) || p.region.toLowerCase().includes(q);
+    const matchDept = !dept || p.dept === dept;
+    const matchRegion = !region || p.region === region;
+    return matchQ && matchDept && matchRegion;
+  });
+  renderDirectory(filtered);
+}
+
+function renderDirectory(list) {
+  const deptColors = { 'ЦПП':'#0066CC', 'ЦКБ':'#7c3aed', 'ОАПК':'#0891b2', 'ОПиМ':'#059669', 'ДКБ':'#dc2626' };
+  const grid = document.getElementById('dir-grid');
+  if (!list.length) { grid.innerHTML = '<div style="color:var(--gray-400);padding:20px;text-align:center">Ничего не найдено</div>'; return; }
+  grid.innerHTML = list.map((p, i) => {
+    const color = deptColors[p.dept] || '#6b7280';
+    const bg = p.isMe ? 'linear-gradient(135deg,#0066CC,#004d99)' : AVATAR_COLORS[i % AVATAR_COLORS.length];
+    return `<div class="dir-card" ${p.isMe ? 'style="border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-light)"' : ''}>
+      <div class="dir-avatar" style="background:${bg}">${p.avatar}</div>
+      <div class="dir-info">
+        <div class="dir-name">${p.name}${p.isMe?' ⭐':''}</div>
+        <div class="dir-role">${p.role}</div>
+        <span class="dir-dept-tag" style="background:${color}18;color:${color}">${p.dept} · ${p.region}</span>
+        <div class="dir-contact">
+          <span>📞 ${p.phone}</span>
+          <span>✉️ ${p.email}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ====== INIT ======
@@ -1320,6 +1794,9 @@ function init() {
   renderChecklist('weekly');
   renderWeekPlan();
   renderMonthPlan();
+  renderMyTasks();
+  renderOrgStructure();
+  renderDirectory(directoryData);
   renderQuickPrompts();
   if (apiKey) document.getElementById('api-banner').style.display = 'none';
 }
